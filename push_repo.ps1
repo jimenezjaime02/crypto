@@ -51,13 +51,24 @@ if (-not (git status --porcelain)) {
 }
 
 # Push
-$pushOutput = git push -u origin main 2>&1
-if ($LASTEXITCODE -eq 0) {
+$pushOutput = ""
+$exitCode = 0
+try {
+    $pushOutput = git push -u origin main 2>&1
+    $exitCode = $LASTEXITCODE
+} catch {
+    $pushOutput = $_.Exception.Message
+    $exitCode = 1
+}
+
+# Determine success. Some git versions return 0 even on non-fast-forward. So check output keywords too.
+$pushFailed = ($exitCode -ne 0) -or ($pushOutput -match 'rejected' -or $pushOutput -match 'failed')
+if (-not $pushFailed) {
     Write-Host "Push succeeded." -ForegroundColor Green
     exit 0
 }
-
-Write-Warning "Initial push failed:`n$pushOutput"
+# else continue to rebase attempt
+Write-Warning "Initial push failed (exit $exitCode):`n$pushOutput"
 Write-Host "Attempting to pull --rebase and retry..." -ForegroundColor Yellow
 git pull --rebase origin main
 if ($LASTEXITCODE -ne 0) {
@@ -65,8 +76,10 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-git push -u origin main
-if ($LASTEXITCODE -eq 0) {
+# Retry push after successful rebase
+$pushOutput = git push -u origin main 2>&1
+$exitCode = $LASTEXITCODE
+if ($exitCode -eq 0 -and ($pushOutput -notmatch 'rejected' -and $pushOutput -notmatch 'failed')) {
     Write-Host "Push succeeded after rebase." -ForegroundColor Green
     exit 0
 }
