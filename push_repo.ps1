@@ -51,11 +51,25 @@ if (-not (git status --porcelain)) {
 }
 
 # Push
-try {
-    git push -u origin main
+$pushOutput = git push -u origin main 2>&1
+if ($LASTEXITCODE -eq 0) {
     Write-Host "Push succeeded." -ForegroundColor Green
     exit 0
-} catch {
-    Write-Host "Push failed: $_" -ForegroundColor Red
+}
+
+Write-Warning "Initial push failed:`n$pushOutput"
+Write-Host "Attempting to pull --rebase and retry..." -ForegroundColor Yellow
+git pull --rebase origin main
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Pull/rebase failed. Aborting." -ForegroundColor Red
     exit 1
 }
+
+git push -u origin main
+if ($LASTEXITCODE -eq 0) {
+    Write-Host "Push succeeded after rebase." -ForegroundColor Green
+    exit 0
+}
+
+Write-Host "Push failed." -ForegroundColor Red
+exit 1
