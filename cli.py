@@ -14,7 +14,7 @@ from config import (
     MOMENTUM_WINDOWS,
     LOG_RETURN_WINDOWS,
 )
-from fetcher import get_market_chart
+from fetcher import get_market_chart, get_ohlc
 from io_utils import write_asset_csv, init_kb, append_kb_row
 from processing import transform_json, enrich_indicators
 
@@ -53,10 +53,11 @@ def process_asset(
         return False
 
     raw = get_market_chart(url, vs_currency, days, interval)
+    ohlc = get_ohlc(url, vs_currency, days)
     if not raw:
         return False
 
-    recs = transform_json(raw, symbol)
+    recs = transform_json(raw, symbol, ohlc)
     recs = enrich_indicators(recs, rsi_windows)
 
     write_asset_csv(symbol, recs, rsi_windows, days)
