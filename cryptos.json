@@ -1,0 +1,36 @@
+{
+  "miggles": {
+    "contract": "0xB1a03EdA10342529bBF8EB700a06C60441fEf25d",
+    "pair": "0x17A3Ad8c74c4947005aFEDa9965305ae2EB2518a",
+    "stablecoin": false,
+    "coingecko_id": "https://api.coingecko.com/api/v3/coins/mister-miggles/market_chart"
+  },
+  "USDC": {
+    "contract": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+    "stablecoin": true
+  },
+  "cbBTC": {
+    "contract": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+    "pair": "0x70aCDF2Ad0bf2402C957154f944c19Ef4e1cbAE1",
+    "stablecoin": false,
+    "coingecko_id": "https://api.coingecko.com/api/v3/coins/coinbase-wrapped-btc/market_chart"
+  },
+  "drb": {
+    "contract": "0x3ec2156D4c0A9CBdAB4a016633b7BcF6a8d68Ea2",
+    "pair": "0x5116773e18A9C7bB03EBB961b38678E45E238923",
+    "stablecoin": false,
+    "coingecko_id": "https://api.coingecko.com/api/v3/coins/debtreliefbot/market_chart"
+  },
+  "ski": {
+    "contract": "0x768BE13e1680b5ebE0024C42c896E3dB59ec0149",
+    "pair": "0x6d6391B9bD02Eefa00FA711fB1Cb828A6471d283",
+    "stablecoin": false,
+    "coingecko_id": "https://api.coingecko.com/api/v3/coins/ski-mask-dog/market_chart"
+  },
+  "WETH": {
+    "contract": "0x4200000000000000000000000000000000000006",
+    "pair": "0x4c80e24119CFB836cdF0a22b5437faFB4fCC13aA",
+    "stablecoin": false,
+    "coingecko_id": "https://api.coingecko.com/api/v3/coins/ethereum/market_chart"
+  }
+}

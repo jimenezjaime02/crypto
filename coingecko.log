@@ -1,0 +1,93 @@
+2025-06-07 08:08:39,188 - ERROR - Failed loading C:\Users\jimen\OneDrive\Desktop\automonous ai agent\cryptos.json – [Errno 2] No such file or directory: 'C:\\Users\\jimen\\OneDrive\\Desktop\\automonous ai agent\\cryptos.json'
+2025-06-07 08:08:39,189 - ERROR - No assets to process – check C:\Users\jimen\OneDrive\Desktop\automonous ai agent\cryptos.json
+2025-06-07 08:09:52,660 - INFO - Initialized knowledge-base C:\Users\jimen\OneDrive\Desktop\automonous ai agent\knowledgebase.csv
+2025-06-07 08:09:52,661 - INFO - [1/6] miggles
+2025-06-07 08:09:52,974 - ERROR - Failed writing C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\miggles_365d.csv – dict contains fields not in fieldnames: 'crypto'
+Traceback (most recent call last):
+  File "C:\Users\jimen\OneDrive\Desktop\automonous ai agent\io_utils.py", line 64, in write_asset_csv
+    writer.writerow(rec)
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 154, in writerow
+    return self.writer.writerow(self._dict_to_list(rowdict))
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 149, in _dict_to_list
+    raise ValueError("dict contains fields not in fieldnames: "
+ValueError: dict contains fields not in fieldnames: 'crypto'
+2025-06-07 08:09:52,986 - INFO - miggles processed (326 records)
+2025-06-07 08:09:53,989 - INFO - [2/6] USDC
+2025-06-07 08:09:53,989 - WARNING - Skipping USDC – no CoinGecko URL
+2025-06-07 08:09:55,000 - INFO - [3/6] cbBTC
+2025-06-07 08:09:55,166 - ERROR - Failed writing C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\cbbtc_365d.csv – dict contains fields not in fieldnames: 'crypto'
+Traceback (most recent call last):
+  File "C:\Users\jimen\OneDrive\Desktop\automonous ai agent\io_utils.py", line 64, in write_asset_csv
+    writer.writerow(rec)
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 154, in writerow
+    return self.writer.writerow(self._dict_to_list(rowdict))
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 149, in _dict_to_list
+    raise ValueError("dict contains fields not in fieldnames: "
+ValueError: dict contains fields not in fieldnames: 'crypto'
+2025-06-07 08:09:55,166 - INFO - cbBTC processed (270 records)
+2025-06-07 08:09:56,169 - INFO - [4/6] drb
+2025-06-07 08:09:56,364 - ERROR - Failed writing C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\drb_365d.csv – dict contains fields not in fieldnames: 'crypto'
+Traceback (most recent call last):
+  File "C:\Users\jimen\OneDrive\Desktop\automonous ai agent\io_utils.py", line 64, in write_asset_csv
+    writer.writerow(rec)
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 154, in writerow
+    return self.writer.writerow(self._dict_to_list(rowdict))
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 149, in _dict_to_list
+    raise ValueError("dict contains fields not in fieldnames: "
+ValueError: dict contains fields not in fieldnames: 'crypto'
+2025-06-07 08:09:56,364 - INFO - drb processed (91 records)
+2025-06-07 08:09:57,379 - INFO - [5/6] ski
+2025-06-07 08:09:57,605 - ERROR - Failed writing C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\ski_365d.csv – dict contains fields not in fieldnames: 'crypto'
+Traceback (most recent call last):
+  File "C:\Users\jimen\OneDrive\Desktop\automonous ai agent\io_utils.py", line 64, in write_asset_csv
+    writer.writerow(rec)
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 154, in writerow
+    return self.writer.writerow(self._dict_to_list(rowdict))
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 149, in _dict_to_list
+    raise ValueError("dict contains fields not in fieldnames: "
+ValueError: dict contains fields not in fieldnames: 'crypto'
+2025-06-07 08:09:57,606 - INFO - ski processed (366 records)
+2025-06-07 08:09:58,613 - INFO - [6/6] WETH
+2025-06-07 08:09:58,793 - ERROR - Failed writing C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\weth_365d.csv – dict contains fields not in fieldnames: 'crypto'
+Traceback (most recent call last):
+  File "C:\Users\jimen\OneDrive\Desktop\automonous ai agent\io_utils.py", line 64, in write_asset_csv
+    writer.writerow(rec)
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 154, in writerow
+    return self.writer.writerow(self._dict_to_list(rowdict))
+  File "C:\Users\jimen\AppData\Local\Programs\Python\Python310\lib\csv.py", line 149, in _dict_to_list
+    raise ValueError("dict contains fields not in fieldnames: "
+ValueError: dict contains fields not in fieldnames: 'crypto'
+2025-06-07 08:09:58,794 - INFO - WETH processed (366 records)
+2025-06-07 08:09:58,795 - INFO - Done – 5/6 succeeded
+2025-06-07 08:10:46,528 - INFO - Initialized knowledge-base C:\Users\jimen\OneDrive\Desktop\automonous ai agent\knowledgebase.csv
+2025-06-07 08:10:46,528 - INFO - [1/6] miggles
+2025-06-07 08:11:32,857 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\miggles_365d.csv
+2025-06-07 08:11:32,857 - INFO - miggles processed (326 records)
+2025-06-07 08:11:33,863 - INFO - [2/6] USDC
+2025-06-07 08:11:33,863 - WARNING - Skipping USDC – no CoinGecko URL
+2025-06-07 08:11:34,873 - INFO - [3/6] cbBTC
+2025-06-07 08:11:34,941 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\cbbtc_365d.csv
+2025-06-07 08:11:34,942 - INFO - cbBTC processed (270 records)
+2025-06-07 08:11:35,944 - INFO - [4/6] drb
+2025-06-07 08:12:36,311 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\drb_365d.csv
+2025-06-07 08:12:36,311 - INFO - drb processed (91 records)
+2025-06-07 08:12:37,316 - INFO - [5/6] ski
+2025-06-07 08:12:37,474 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\ski_365d.csv
+2025-06-07 08:12:37,475 - INFO - ski processed (366 records)
+2025-06-07 08:12:38,482 - INFO - [6/6] WETH
+2025-06-07 08:13:38,743 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\weth_365d.csv
+2025-06-07 08:13:38,743 - INFO - WETH processed (366 records)
+2025-06-07 08:13:38,743 - INFO - Done – 5/6 succeeded
+2025-06-07 08:17:45,621 - INFO - Initialized knowledge-base C:\Users\jimen\OneDrive\Desktop\automonous ai agent\knowledgebase.csv
+2025-06-07 08:17:45,628 - WARNING - Skipping USDC – no CoinGecko URL
+2025-06-07 08:17:45,916 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\miggles_365d.csv
+2025-06-07 08:17:45,916 - INFO - miggles processed (326 records)
+2025-06-07 08:17:46,987 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\drb_365d.csv
+2025-06-07 08:17:46,988 - INFO - drb processed (91 records)
+2025-06-07 08:17:47,156 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\cbbtc_365d.csv
+2025-06-07 08:17:47,156 - INFO - cbBTC processed (270 records)
+2025-06-07 08:17:47,195 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\weth_365d.csv
+2025-06-07 08:17:47,197 - INFO - WETH processed (366 records)
+2025-06-07 08:17:47,268 - INFO - Wrote C:\Users\jimen\OneDrive\Desktop\automonous ai agent\data\ski_365d.csv
+2025-06-07 08:17:47,268 - INFO - ski processed (366 records)
+2025-06-07 08:17:47,269 - INFO - Done – 5/6 succeeded in 1.6s (using 6 workers)
