@@ -26,10 +26,12 @@ from config import (
 def transform_json(
     data: Dict[str, Any],
     asset: str,
+    ohlc: List[List[float]] | None = None,
 ) -> List[Dict[str, Any]]:
     """Convert CoinGecko *market_chart* response to list of dicts."""
     prices = data.get("prices", [])
     total_volumes = data.get("total_volumes", [])
+    market_caps = data.get("market_caps", [])
 
     records: list[dict[str, Any]] = []
     prev_price: float | None = None
@@ -44,13 +46,21 @@ def transform_json(
         pct_24h = None
         if prev_price and prev_price > 0:
             pct_24h = (price - prev_price) / prev_price * 100.0
-        records.append({
+        rec = {
             "Date": ts_str,
             "Price": price,
             "Volume": volume,
             "24h_Change": pct_24h,
             "crypto": asset,
-        })
+        }
+        if ohlc and idx < len(ohlc):
+            _, o_open, o_high, o_low, _ = ohlc[idx]
+            rec["Open"] = float(o_open)
+            rec["High"] = float(o_high)
+            rec["Low"] = float(o_low)
+        if idx < len(market_caps) and len(market_caps[idx]) > 1:
+            rec["Market_Cap"] = float(market_caps[idx][1])
+        records.append(rec)
         prev_price = price
     return records
 
@@ -125,4 +135,18 @@ def enrich_indicators(
     logging.debug("Enriched %d records with indicators", len(records))
     return records
 
-__all__ = ["transform_json", "enrich_indicators"]
+
+def validate_records(records: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """Return only records that contain numeric price and volume."""
+    clean: list[Dict[str, Any]] = []
+    for rec in records:
+        try:
+            float(rec["Price"])
+            float(rec["Volume"])
+        except (KeyError, TypeError, ValueError):
+            logging.warning("Invalid record skipped: %s", rec)
+            continue
+        clean.append(rec)
+    return clean
+
+__all__ = ["transform_json", "enrich_indicators", "validate_records"]

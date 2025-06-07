@@ -67,6 +67,38 @@ def get_market_chart(
         return {}
 
 
+def get_ohlc(
+    coingecko_url: str,
+    vs_currency: str,
+    days: str,
+) -> list:
+    """Return OHLC list or empty list on error."""
+    sess = _get_session()
+
+    from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
+
+    ohlc_url = coingecko_url.replace("market_chart", "ohlc")
+    parsed = urlparse(ohlc_url)
+    q = parse_qs(parsed.query)
+    q.update({"vs_currency": vs_currency, "days": days})
+
+    final_url = urlunparse(parsed._replace(query=urlencode(q, doseq=True)))
+
+    _respect_rate_limit()
+
+    try:
+        r = sess.get(final_url, timeout=15, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        data = r.json()
+        if not isinstance(data, list):
+            logging.error("Unexpected CoinGecko OHLC format for %s", final_url)
+            return []
+        return data
+    except requests.exceptions.RequestException as exc:
+        logging.error("Error fetching %s – %s", final_url, exc)
+        return []
+
+
 # ---------------------------------------------------------------------------
 
 
@@ -78,4 +110,4 @@ def _respect_rate_limit():
     _respect_rate_limit._last = time.time()  # type: ignore[attr-defined]
 
 
-__all__ = ["get_market_chart"]
+__all__ = ["get_market_chart", "get_ohlc"]

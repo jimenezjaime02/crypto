@@ -12,11 +12,12 @@ import logging
 from typing import Dict
 
 from decision_maker import generate_decisions
+from telegram_utils import send_message
 
 from config import CG_LOG_PATH, CRYPTOS_PATH
-from fetcher import get_market_chart
+from fetcher import get_market_chart, get_ohlc
 from io_utils import write_asset_csv, init_kb, append_kb_row
-from processing import transform_json, enrich_indicators
+from processing import transform_json, enrich_indicators, validate_records
 
 
 logging.basicConfig(
@@ -32,9 +33,13 @@ def load_assets() -> Dict[str, Dict]:
     try:
         with open(CRYPTOS_PATH, "r", encoding="utf-8") as fp:
             return json.load(fp)
-    except Exception as exc:  # pylint: disable=broad-except
-        logger.error("Failed loading %s – %s", CRYPTOS_PATH, exc)
-        return {}
+    except FileNotFoundError as exc:
+        logger.error("Asset configuration not found: %s", exc)
+    except json.JSONDecodeError as exc:
+        logger.error("Invalid JSON in %s: %s", CRYPTOS_PATH, exc)
+    except OSError as exc:
+        logger.error("Failed reading %s – %s", CRYPTOS_PATH, exc)
+    return {}
 
 
 def run_pipeline() -> int:
@@ -59,16 +64,18 @@ def run_pipeline() -> int:
                 continue
 
             raw = get_market_chart(url, vs_currency, days, interval)
+            ohlc = get_ohlc(url, vs_currency, days)
             if not raw:
                 raise RuntimeError("empty data returned")
 
-            recs = transform_json(raw, symbol)
+            recs = transform_json(raw, symbol, ohlc)
+            recs = validate_records(recs)
             recs = enrich_indicators(recs, rsi_windows)
 
             write_asset_csv(symbol, recs, rsi_windows, days)
             append_kb_row(symbol, recs[-1], rsi_windows)
             logger.info("%s processed (%d records)", symbol, len(recs))
-        except Exception as exc:  # pylint: disable=broad-except
+        except (RuntimeError, ValueError, OSError) as exc:
             logger.error("Failed processing %s – %s", symbol, exc)
 
     logger.info("Pipeline complete")
@@ -78,8 +85,11 @@ def run_pipeline() -> int:
         decisions = generate_decisions()
         for asset, decision in decisions.items():
             logger.info("Decision for %s: %s", asset, decision)
-    except Exception as exc:  # pylint: disable=broad-except
+    except (OSError, ValueError) as exc:
         logger.error("Failed generating decisions – %s", exc)
+    else:
+        summary = ", ".join(f"{a}:{d}" for a, d in decisions.items())
+        send_message(f"Decisions: {summary}")
 
     return 0
 

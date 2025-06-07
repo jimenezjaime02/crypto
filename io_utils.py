@@ -34,6 +34,7 @@ def write_asset_csv(
         "Low",
         "Price",
         "Volume",
+        "Market_Cap",
         "obv",
         "24h_Change",
         "1d_Return",
@@ -63,7 +64,7 @@ def write_asset_csv(
             for rec in records:
                 writer.writerow(rec)
         logging.info("Wrote %s", path)
-    except Exception as exc:  # pylint: disable=broad-except
+    except (OSError, csv.Error) as exc:
         logging.exception("Failed writing %s – %s", path, exc)
     return path
 
@@ -75,8 +76,12 @@ def init_kb(rsi_windows: List[int]):
     header = [
         "Crypto",
         "Date",
+        "Open",
+        "High",
+        "Low",
         "Price",
         "Volume",
+        "Market_Cap",
         "1d Return",
         "7d Return",
     ]
@@ -106,8 +111,12 @@ def append_kb_row(asset: str, latest: Dict[str, Any], rsi_windows: List[int]):
     row = [
         asset,
         latest["Date"],
+        latest.get("Open"),
+        latest.get("High"),
+        latest.get("Low"),
         latest["Price"],
         latest["Volume"],
+        latest.get("Market_Cap"),
         latest.get("1d_Return"),
         latest.get("7d_Return"),
     ]

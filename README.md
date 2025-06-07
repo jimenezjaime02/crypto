@@ -57,6 +57,7 @@ The script will:
 1. Load your asset list from `cryptos.json`.
 2. Rate-limit and download each asset’s data from CoinGecko.
 3. Compute SMA, EMA, RSI, Bollinger Bands, MACD, Momentum, Log-returns and OBV.
+   Daily OHLC values and market caps are also stored.
 4. Write a per-asset CSV in `data/<symbol>_365d.csv`.
 5. Append the latest snapshot for each asset to `knowledgebase.csv`.
 

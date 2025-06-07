@@ -18,7 +18,11 @@ def load_knowledge_base(path: str | None = None) -> List[Dict[str, str]]:
             reader = csv.DictReader(fp)
             for row in reader:
                 rows.append(row)
-    except Exception as exc:  # pylint: disable=broad-except
+    except FileNotFoundError as exc:
+        print(f"Knowledge base not found: {exc}")
+    except csv.Error as exc:
+        print(f"Malformed CSV in {path}: {exc}")
+    except OSError as exc:
         print(f"Error reading {path}: {exc}")
     return rows
 
