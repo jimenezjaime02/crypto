@@ -1,0 +1,16 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.log
+
+# Virtual environment
+.venv/
+
+# Data outputs
+/data/
+knowledgebase.csv
+coingecko.log
+
+# OS/filesystem
+.DS_Store
+Thumbs.db
