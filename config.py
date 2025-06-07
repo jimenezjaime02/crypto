@@ -49,8 +49,20 @@ RATE_LIMIT_INTERVAL: float = 1.2
 # Optional Telegram integration (currently unused in code base)
 # ---------------------------------------------------------------------------
 
-TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
-TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", "")
+try:
+    from telegram_config import (
+        TELEGRAM_BOT_TOKEN as CFG_BOT_TOKEN,
+        TELEGRAM_CHAT_ID as CFG_CHAT_ID,
+        BOT_NAME as CFG_BOT_NAME,
+    )
+except Exception:  # pragma: no cover - optional file
+    CFG_BOT_TOKEN = ""
+    CFG_CHAT_ID = ""
+    CFG_BOT_NAME = "Price_change_24hr_bot"
+
+TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", CFG_BOT_TOKEN)
+TELEGRAM_CHAT_ID: str = os.getenv("TELEGRAM_CHAT_ID", CFG_CHAT_ID)
+BOT_NAME: str = os.getenv("BOT_NAME", CFG_BOT_NAME)
 
 __all__ = [
     "CRYPTO_DATA_DIR",
@@ -67,4 +79,5 @@ __all__ = [
     "RATE_LIMIT_INTERVAL",
     "TELEGRAM_BOT_TOKEN",
     "TELEGRAM_CHAT_ID",
+    "BOT_NAME",
 ]

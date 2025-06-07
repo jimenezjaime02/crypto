@@ -44,7 +44,15 @@ contain a `coingecko_id` field pointing at the
 ```
 
 Optional environment variables can be set for Telegram notifications, but the
-messaging feature is currently disabled in the code.
+messaging feature is currently disabled in the code.  If you prefer to keep the
+credentials in the repository, create ``telegram_config.py`` containing::
+
+    TELEGRAM_BOT_TOKEN = "<your_bot_token>"
+    TELEGRAM_CHAT_ID = "<chat_id>"
+    BOT_NAME = "Price_change_24hr_bot"
+
+The helper in ``telegram_utils.py`` reads these variables via ``config.py`` when
+sending a message.
 
 ## Running the pipeline
 
@@ -57,6 +65,7 @@ The script will:
 1. Load your asset list from `cryptos.json`.
 2. Rate-limit and download each asset’s data from CoinGecko.
 3. Compute SMA, EMA, RSI, Bollinger Bands, MACD, Momentum, Log-returns and OBV.
+   Daily OHLC values and market caps are also stored.
 4. Write a per-asset CSV in `data/<symbol>_365d.csv`.
 5. Append the latest snapshot for each asset to `knowledgebase.csv`.
 
