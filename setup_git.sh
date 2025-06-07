@@ -11,16 +11,18 @@ git config --global user.name "jimenezjaime02"
 git config --global user.email "jimenezjaime02@gmail.com"
 
 # ---------------------------------------------------------------------------
-# Credential storage (insecure convenience)
+# Credential storage – use Git credential manager if available
 # ---------------------------------------------------------------------------
 
 git config --global credential.helper store
 
-# Personal access token – replace with a safer mechanism if possible
-PAT=""
-
-echo "https://jimenezjaime02:${PAT}@github.com" > "$HOME/.git-credentials"
-chmod 600 "$HOME/.git-credentials"
+# Personal access token – **DO NOT COMMIT real tokens**
+# Provide it via env var GITHUB_PAT or enter manually on first push.
+if [ -n "$GITHUB_PAT" ]; then
+  echo "Using PAT from env var GITHUB_PAT"
+  echo "https://jimenezjaime02:${GITHUB_PAT}@github.com" > "$HOME/.git-credentials"
+  chmod 600 "$HOME/.git-credentials"
+fi
 
 # ---------------------------------------------------------------------------
 # Remote setup
