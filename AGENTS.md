@@ -84,3 +84,8 @@ This document provides full context for the `push_repo.sh` script so that AI age
   git push --all
   ```
 - You can integrate this script into CI/CD or cron jobs for automated deployments.
+
+## Autonomous AI Agent Vision
+
+The long-term goal of this project is to build an AI-driven agent that can autonomously analyze market data and execute cryptocurrency trades. At this stage we are concentrating on producing reliable trading signals. Automated trade execution will come later once the signal quality is proven.
+
