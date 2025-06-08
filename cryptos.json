@@ -32,5 +32,11 @@
     "pair": "0x4c80e24119CFB836cdF0a22b5437faFB4fCC13aA",
     "stablecoin": false,
     "coingecko_id": "https://api.coingecko.com/api/v3/coins/ethereum/market_chart"
+  },
+  "okayeg": {
+    "contract": "0xdb6e0e5094A25a052aB6845a9f1e486B9A9B3DdE",
+    "pair": "0x58342C302dd4DF0531F60dD3C0EabB0C95AC08Cb",
+    "stablecoin": false,
+    "coingecko_id": "https://api.coingecko.com/api/v3/coins/okayeg/market_chart"
   }
 }
