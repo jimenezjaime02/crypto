@@ -12,7 +12,8 @@ import logging
 from typing import Dict
 
 from decision_maker import generate_decisions
-from telegram_utils import send_message
+from telegram_utils import send_message, send_image
+from plot_utils import plot_price_with_rsi
 import cli
 
 from config import CG_LOG_PATH, CRYPTOS_PATH
@@ -65,6 +66,16 @@ def run_pipeline() -> int:
             logger.info("Telegram notification sent")
         else:
             logger.info("Telegram notification failed or disabled")
+
+        for asset in decisions:
+            try:
+                img = plot_price_with_rsi(asset)
+                if send_image(img, f"{asset} price and RSI"):
+                    logger.info("Chart for %s sent", asset)
+                else:
+                    logger.info("Chart for %s failed to send", asset)
+            except Exception as exc:
+                logger.error("Failed to generate/send chart for %s – %s", asset, exc)
 
     return 0
 

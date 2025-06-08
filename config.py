@@ -19,6 +19,9 @@ BASE_DIR: Path = Path(__file__).resolve().parent
 # Directory where per-asset historical CSVs will be written
 CRYPTO_DATA_DIR: Path = BASE_DIR / "data"
 
+# Directory where generated charts will be saved
+CHARTS_DIR: Path = BASE_DIR / "charts"
+
 # Knowledge-base CSV (aggregated latest snapshot for every asset)
 KB_PATH: Path = BASE_DIR / "knowledgebase.csv"
 
@@ -66,6 +69,7 @@ BOT_NAME: str = os.getenv("BOT_NAME", CFG_BOT_NAME)
 
 __all__ = [
     "CRYPTO_DATA_DIR",
+    "CHARTS_DIR",
     "KB_PATH",
     "CG_LOG_PATH",
     "CRYPTOS_PATH",

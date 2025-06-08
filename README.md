@@ -26,8 +26,8 @@ source .venv/bin/activate        # On Windows use: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-`requirements.txt` is minimal – **only** `requests` for HTTP and `pytest` for
-tests. Everything else is in the standard library.
+`requirements.txt` is minimal – `requests` for HTTP, `matplotlib` for chart
+generation and `pytest` for tests. Everything else is in the standard library.
 
 ## Configuration
 
@@ -68,6 +68,8 @@ The script will:
    Daily OHLC values and market caps are also stored.
 4. Write a per-asset CSV in `data/<symbol>_365d.csv`.
 5. Append the latest snapshot for each asset to `knowledgebase.csv`.
+6. Save a price chart with RSI to `charts/<symbol>_chart.png` and send it via
+   Telegram if credentials are configured.
 
 ## Running tests
 
