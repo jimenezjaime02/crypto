@@ -10,13 +10,14 @@ from __future__ import annotations
 import json
 import logging
 from typing import Dict
+from concurrent.futures import ThreadPoolExecutor
 
 from decision_maker import generate_decisions
 from telegram_utils import send_message, send_image
 from plot_utils import plot_price_with_rsi
 import cli
 
-from config import CG_LOG_PATH, CRYPTOS_PATH
+from config import CG_LOG_PATH, CRYPTOS_PATH, CHART_UPLOAD_WORKERS
 
 
 logging.basicConfig(
@@ -67,7 +68,7 @@ def run_pipeline() -> int:
         else:
             logger.info("Telegram notification failed or disabled")
 
-        for asset in decisions:
+        def _process_chart(asset: str) -> None:
             try:
                 img = plot_price_with_rsi(asset)
                 if send_image(img, f"{asset} price and RSI"):
@@ -76,6 +77,9 @@ def run_pipeline() -> int:
                     logger.info("Chart for %s failed to send", asset)
             except Exception as exc:
                 logger.error("Failed to generate/send chart for %s – %s", asset, exc)
+
+        with ThreadPoolExecutor(max_workers=CHART_UPLOAD_WORKERS) as executor:
+            executor.map(_process_chart, decisions)
 
     return 0
 

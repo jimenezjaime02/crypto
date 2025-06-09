@@ -8,7 +8,7 @@ from typing import Iterable
 
 import matplotlib.pyplot as plt
 
-from config import CRYPTO_DATA_DIR, CHARTS_DIR
+from config import CRYPTO_DATA_DIR, CHARTS_DIR, CHART_DPI
 
 
 def ensure_dirs():
@@ -55,7 +55,7 @@ def plot_price_with_rsi(asset: str, days: str = "365", rsi_window: int = 14) -> 
     fig.tight_layout()
 
     out_path = CHARTS_DIR / f"{asset.lower()}_chart.png"
-    fig.savefig(out_path)
+    fig.savefig(out_path, dpi=CHART_DPI, bbox_inches="tight")
     plt.close(fig)
     return out_path
 

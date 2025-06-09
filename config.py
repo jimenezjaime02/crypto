@@ -49,6 +49,16 @@ LOG_RETURN_WINDOWS: list[int] = [7, 14, 30]
 RATE_LIMIT_INTERVAL: float = 1.2
 
 # ---------------------------------------------------------------------------
+# Chart generation settings
+# ---------------------------------------------------------------------------
+
+# DPI for matplotlib figures (lower value reduces file size)
+CHART_DPI: int = 80
+
+# Number of threads for uploading charts to Telegram
+CHART_UPLOAD_WORKERS: int = 4
+
+# ---------------------------------------------------------------------------
 # Optional Telegram integration (currently unused in code base)
 # ---------------------------------------------------------------------------
 
@@ -81,6 +91,8 @@ __all__ = [
     "MOMENTUM_WINDOWS",
     "LOG_RETURN_WINDOWS",
     "RATE_LIMIT_INTERVAL",
+    "CHART_DPI",
+    "CHART_UPLOAD_WORKERS",
     "TELEGRAM_BOT_TOKEN",
     "TELEGRAM_CHAT_ID",
     "BOT_NAME",
