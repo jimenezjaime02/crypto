@@ -24,7 +24,7 @@ def write_asset_csv(
     rsi_windows: List[int],
     days: str,
 ) -> Path:
-    """Write per-asset historical CSV and return its path."""
+    """Write or append to a per-asset CSV and return its path."""
     ensure_dirs()
     path = CRYPTO_DATA_DIR / f"{asset.lower()}_{days}d.csv"
     header: list[str] = [
@@ -57,13 +57,40 @@ def write_asset_csv(
     for w in LOG_RETURN_WINDOWS:
         header.append(f"log_return_{w}")
 
+    # Determine whether to append or create a new file
+    mode = "w"
+    new_records = records
+    if path.exists():
+        try:
+            with path.open("r", newline="", encoding="utf-8") as fp:
+                reader = csv.DictReader(fp)
+                existing = list(reader)
+            if existing:
+                from datetime import datetime
+
+                last_dt = datetime.strptime(existing[-1]["Date"], "%Y-%m-%d %H:%M:%S")
+                new_records = [
+                    r
+                    for r in records
+                    if datetime.strptime(r["Date"], "%Y-%m-%d %H:%M:%S") > last_dt
+                ]
+                mode = "a" if new_records else "r"  # 'r' means nothing new
+        except (OSError, csv.Error, KeyError, ValueError) as exc:
+            logging.warning("Failed reading %s for append – %s; overwriting", path, exc)
+
+    if mode == "r":
+        logging.info("No new records for %s", asset)
+        return path
+
     try:
-        with path.open("w", newline="", encoding="utf-8") as fp:
+        with path.open(mode, newline="", encoding="utf-8") as fp:
             writer = csv.DictWriter(fp, fieldnames=header, extrasaction="ignore")
-            writer.writeheader()
-            for rec in records:
+            if mode == "w" or fp.tell() == 0:
+                writer.writeheader()
+            for rec in new_records:
                 writer.writerow(rec)
-        logging.info("Wrote %s", path)
+        action = "Appended" if mode == "a" else "Wrote"
+        logging.info("%s %s (%d new records)", action, path, len(new_records))
     except (OSError, csv.Error) as exc:
         logging.exception("Failed writing %s – %s", path, exc)
     return path
