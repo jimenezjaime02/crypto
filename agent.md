@@ -84,3 +84,41 @@ This document provides full context for the `push_repo.sh` script so that AI age
   git push --all
   ```
 - You can integrate this script into CI/CD or cron jobs for automated deployments.
+
+## Trading Automation Logic
+
+This repository includes Python utilities for fetching cryptocurrency prices,
+computing indicators, and producing trading signals. Key modules are:
+
+- `fetcher.py` – downloads OHLC data from CoinGecko.
+- `processing.py` – calculates SMA, EMA, RSI, MACD and more.
+- `decision_maker.py` – loads the latest snapshot from `knowledgebase.csv` and
+  labels each asset as `BUY`, `SELL`, or `HOLD`.
+
+The current decision rule is straightforward:
+
+```python
+def decide(row: Dict[str, str]) -> str:
+    if rsi < 30 and macd_hist > 0:
+        return "BUY"
+    if rsi > 70 and macd_hist < 0:
+        return "SELL"
+    return "HOLD"
+```
+
+`master.py` orchestrates the pipeline, updating data and optionally sending a
+Telegram summary.
+
+## Using the Agent for Base Network Trading
+
+To automate trading on the Base network, extend the agent as follows:
+
+1. Run `cli.py` regularly to refresh market data and compute indicators.
+2. Call `generate_decisions()` to produce signals for each tracked asset.
+3. Translate the signals into swaps or trades on a Base-compatible exchange or
+   smart contract.
+4. Log executed orders and apply risk-management rules (stop-loss, position
+   sizing, etc.).
+
+Currently the code stops after generating signals, but integrating a Base
+network trading layer will enable full automation.
