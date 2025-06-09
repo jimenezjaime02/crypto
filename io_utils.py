@@ -24,7 +24,7 @@ def write_asset_csv(
     rsi_windows: List[int],
     days: str,
 ) -> Path:
-    """Write per-asset historical CSV and return its path."""
+    """Write or append to a per-asset CSV and return its path."""
     ensure_dirs()
     path = CRYPTO_DATA_DIR / f"{asset.lower()}_{days}d.csv"
     header: list[str] = [
@@ -57,13 +57,50 @@ def write_asset_csv(
     for w in LOG_RETURN_WINDOWS:
         header.append(f"log_return_{w}")
 
+    # Merge existing data with new records and keep only the last ``days`` unique
+    # dates. When multiple rows exist for the same day, keep the latest record.
+    combined = records
+    if path.exists():
+        try:
+            with path.open("r", newline="", encoding="utf-8") as fp:
+                reader = csv.DictReader(fp)
+                combined = list(reader) + records
+        except (OSError, csv.Error) as exc:
+            logging.warning("Failed reading %s – %s; recreating file", path, exc)
+
+    from datetime import datetime
+
+    daily: dict[str, dict[str, Any]] = {}
+    for rec in combined:
+        dt = rec.get("Date")
+        if not dt:
+            continue
+        try:
+            dt_obj = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S")
+        except ValueError:
+            continue
+        day_key = dt_obj.date().isoformat()
+        # keep the latest record for each day
+        prev = daily.get(day_key)
+        if not prev or dt_obj > datetime.strptime(prev["Date"], "%Y-%m-%d %H:%M:%S"):
+            daily[day_key] = rec
+
+    dedup = list(daily.values())
+    dedup.sort(key=lambda r: datetime.strptime(r["Date"], "%Y-%m-%d %H:%M:%S"))
+
+    try:
+        keep = int(days)
+    except ValueError:
+        keep = len(dedup)
+    trimmed = dedup[-keep:]
+
     try:
         with path.open("w", newline="", encoding="utf-8") as fp:
             writer = csv.DictWriter(fp, fieldnames=header, extrasaction="ignore")
             writer.writeheader()
-            for rec in records:
+            for rec in trimmed:
                 writer.writerow(rec)
-        logging.info("Wrote %s", path)
+        logging.info("Wrote %s (%d records)", path, len(trimmed))
     except (OSError, csv.Error) as exc:
         logging.exception("Failed writing %s – %s", path, exc)
     return path
