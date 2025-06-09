@@ -26,8 +26,8 @@ source .venv/bin/activate        # On Windows use: .venv\Scripts\activate
 python -m pip install -r requirements.txt
 ```
 
-`requirements.txt` is minimal – **only** `requests` for HTTP and `pytest` for
-tests. Everything else is in the standard library.
+`requirements.txt` is minimal – `requests` for HTTP, `pytest` for tests and
+`matplotlib` for optional charting. Everything else is in the standard library.
 
 ## Configuration
 
@@ -58,6 +58,13 @@ sending a message.
 
 ```bash
 python cli.py              # Fetches 365 days of daily OHLC data for every asset
+```
+
+Or run `master.py` which also generates trading signals and can optionally
+produce charts:
+
+```bash
+python master.py --plot    # Send decisions and charts via Telegram
 ```
 
 The script will:
