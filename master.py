@@ -7,15 +7,16 @@ is logged and the script continues with the next asset.
 
 from __future__ import annotations
 
-import json
 import logging
-from typing import Dict
+import argparse
+from typing import Dict, List
 
 from decision_maker import generate_decisions
-from telegram_utils import send_message
+from telegram_utils import send_message, send_photo
+from visualization import plot_all
 import cli
 
-from config import CG_LOG_PATH, CRYPTOS_PATH
+from config import CG_LOG_PATH
 
 
 logging.basicConfig(
@@ -26,21 +27,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def load_assets() -> Dict[str, Dict]:
-    """Load asset configuration from ``cryptos.json``."""
-    try:
-        with open(CRYPTOS_PATH, "r", encoding="utf-8") as fp:
-            return json.load(fp)
-    except FileNotFoundError as exc:
-        logger.error("Asset configuration not found: %s", exc)
-    except json.JSONDecodeError as exc:
-        logger.error("Invalid JSON in %s: %s", CRYPTOS_PATH, exc)
-    except OSError as exc:
-        logger.error("Failed reading %s – %s", CRYPTOS_PATH, exc)
-    return {}
 
-
-def run_pipeline() -> int:
+def run_pipeline(send_plots: bool = False) -> int:
     """Run the concurrent pipeline from ``cli.py`` then generate decisions."""
 
     # Use the faster threaded implementation from ``cli.py``
@@ -65,9 +53,23 @@ def run_pipeline() -> int:
             logger.info("Telegram notification sent")
         else:
             logger.info("Telegram notification failed or disabled")
+        if send_plots:
+            for path in plot_all():
+                send_photo(str(path), caption=path.stem)
 
     return 0
 
 
+def main(argv: List[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Run full pipeline")
+    parser.add_argument(
+        "--plot",
+        action="store_true",
+        help="Generate price/RSI plots and send via Telegram",
+    )
+    args = parser.parse_args(argv)
+    return run_pipeline(send_plots=args.plot)
+
+
 if __name__ == "__main__":
-    raise SystemExit(run_pipeline())
+    raise SystemExit(main())
