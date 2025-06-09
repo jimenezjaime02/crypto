@@ -24,7 +24,7 @@ def write_asset_csv(
     rsi_windows: List[int],
     days: str,
 ) -> Path:
-    """Write per-asset historical CSV and return its path."""
+    """Write or append to a per-asset CSV and return its path."""
     ensure_dirs()
     path = CRYPTO_DATA_DIR / f"{asset.lower()}_{days}d.csv"
     header: list[str] = [
@@ -57,13 +57,42 @@ def write_asset_csv(
     for w in LOG_RETURN_WINDOWS:
         header.append(f"log_return_{w}")
 
+    # Merge existing data with new records and keep only the last ``days`` entries
+    combined = records
+    if path.exists():
+        try:
+            with path.open("r", newline="", encoding="utf-8") as fp:
+                reader = csv.DictReader(fp)
+                combined = list(reader) + records
+        except (OSError, csv.Error) as exc:
+            logging.warning("Failed reading %s – %s; recreating file", path, exc)
+
+    # Deduplicate by date
+    dedup: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for rec in combined:
+        dt = rec.get("Date")
+        if dt and dt not in seen:
+            dedup.append(rec)
+            seen.add(dt)
+
+    # Sort and trim to the last ``days`` entries
+    from datetime import datetime
+
+    dedup.sort(key=lambda r: datetime.strptime(r["Date"], "%Y-%m-%d %H:%M:%S"))
+    try:
+        keep = int(days)
+    except ValueError:
+        keep = len(dedup)
+    trimmed = dedup[-keep:]
+
     try:
         with path.open("w", newline="", encoding="utf-8") as fp:
             writer = csv.DictWriter(fp, fieldnames=header, extrasaction="ignore")
             writer.writeheader()
-            for rec in records:
+            for rec in trimmed:
                 writer.writerow(rec)
-        logging.info("Wrote %s", path)
+        logging.info("Wrote %s (%d records)", path, len(trimmed))
     except (OSError, csv.Error) as exc:
         logging.exception("Failed writing %s – %s", path, exc)
     return path
