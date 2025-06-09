@@ -67,8 +67,9 @@ produce charts:
 python master.py --plot    # Send decisions and charts via Telegram
 ```
 
-When plotting is enabled, each generated PNG shows price history on the top
-panel and RSI 7/14/21 curves on a separate lower panel.
+When plotting is enabled, each generated PNG contains two panels. The upper
+panel shows price history together with SMA 20, EMA 20 and shaded Bollinger
+Bands. The lower panel displays RSI 7/14/21 curves with 30/70 threshold lines.
 
 The script will:
 
