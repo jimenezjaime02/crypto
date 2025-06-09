@@ -14,6 +14,7 @@ from config import (
     MOMENTUM_WINDOWS,
     LOG_RETURN_WINDOWS,
 )
+from utils import load_assets
 from fetcher import get_market_chart, get_ohlc
 from io_utils import write_asset_csv, init_kb, append_kb_row
 from processing import transform_json, enrich_indicators, validate_records
@@ -29,19 +30,6 @@ logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 
-def load_assets() -> dict[str, dict]:
-    try:
-        with open(CRYPTOS_PATH, "r", encoding="utf-8") as fp:
-            return json.load(fp)
-    except FileNotFoundError as exc:
-        logger.error("Asset configuration not found: %s", exc)
-    except json.JSONDecodeError as exc:
-        logger.error("Invalid JSON in %s: %s", CRYPTOS_PATH, exc)
-    except OSError as exc:
-        logger.error("Failed reading %s – %s", CRYPTOS_PATH, exc)
-    return {}
-
-# ---------------------------------------------------------------------------
 
 def process_asset(
     symbol: str,

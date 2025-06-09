@@ -16,6 +16,7 @@ from telegram_utils import send_message
 import cli
 
 from config import CG_LOG_PATH, CRYPTOS_PATH
+from utils import load_assets
 
 
 logging.basicConfig(
@@ -25,19 +26,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
-def load_assets() -> Dict[str, Dict]:
-    """Load asset configuration from ``cryptos.json``."""
-    try:
-        with open(CRYPTOS_PATH, "r", encoding="utf-8") as fp:
-            return json.load(fp)
-    except FileNotFoundError as exc:
-        logger.error("Asset configuration not found: %s", exc)
-    except json.JSONDecodeError as exc:
-        logger.error("Invalid JSON in %s: %s", CRYPTOS_PATH, exc)
-    except OSError as exc:
-        logger.error("Failed reading %s – %s", CRYPTOS_PATH, exc)
-    return {}
 
 
 def run_pipeline() -> int:
