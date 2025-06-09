@@ -67,6 +67,9 @@ produce charts:
 python master.py --plot    # Send decisions and charts via Telegram
 ```
 
+When plotting is enabled, each generated PNG shows price history on the top
+panel and RSI 7/14/21 curves on a separate lower panel.
+
 The script will:
 
 1. Load your asset list from `cryptos.json`.

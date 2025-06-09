@@ -1,4 +1,4 @@
-"""Plot price chart and RSI indicators for assets."""
+"""Plot price and RSI charts for assets."""
 from __future__ import annotations
 
 import csv
@@ -43,7 +43,11 @@ def _read_csv(path: Path) -> tuple[List[datetime], List[float], List[float], Lis
 
 
 def plot_asset(symbol: str, days: str = "365", csv_path: Path | None = None) -> Path:
-    """Generate a PNG chart for *symbol* and return the path."""
+    """Generate a PNG chart for *symbol* and return the path.
+
+    The output image contains two panels: the top shows the price history and
+    the bottom displays RSI 7, 14 and 21 curves.
+    """
     path = csv_path or CRYPTO_DATA_DIR / f"{symbol.lower()}_{days}d.csv"
     if not path.exists():
         raise FileNotFoundError(path)
@@ -52,21 +56,22 @@ def plot_asset(symbol: str, days: str = "365", csv_path: Path | None = None) -> 
     if not dates:
         raise ValueError(f"No data in {path}")
 
-    fig, ax_price = plt.subplots(figsize=(8, 4))
+    fig, (ax_price, ax_rsi) = plt.subplots(
+        2, 1, figsize=(8, 6), sharex=True, gridspec_kw={"height_ratios": [2, 1]}
+    )
+    # Price panel
     ax_price.plot(dates, prices, label="Price", color="blue")
     ax_price.set_ylabel("Price")
+    ax_price.legend(loc="upper left")
 
-    ax_rsi = ax_price.twinx()
+    # RSI panel
     ax_rsi.plot(dates, rsi7, label="RSI 7", color="orange")
     ax_rsi.plot(dates, rsi14, label="RSI 14", color="green")
     ax_rsi.plot(dates, rsi21, label="RSI 21", color="red")
     ax_rsi.set_ylabel("RSI")
     ax_rsi.axhline(70, color="grey", ls="--", lw=0.8)
     ax_rsi.axhline(30, color="grey", ls="--", lw=0.8)
-
-    lines1, labels1 = ax_price.get_legend_handles_labels()
-    lines2, labels2 = ax_rsi.get_legend_handles_labels()
-    ax_price.legend(lines1 + lines2, labels1 + labels2, loc="upper left")
+    ax_rsi.legend(loc="upper left")
 
     fig.autofmt_xdate()
     out_path = CRYPTO_DATA_DIR / f"{symbol.lower()}_{days}.png"
